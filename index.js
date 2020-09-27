@@ -11,16 +11,16 @@ module.exports = createTagNameEngine = () => ({
       return Array.from(document.querySelectorAll('*')).find(el => el.textContent === selector);
     }
     function above(candidateRect, refRect) {
-      return candidateRect.bottom >= refRect.top && candidateRect.right <= refRect.right && candidateRect.left >= refRect.left;
+      return candidateRect.bottom >= refRect.top && candidateRect.left < refRect.right && candidateRect.right > refRect.left;
     }
     function below(candidateRect, refRect) {
-      return candidateRect.top >= refRect.bottom && candidateRect.right <= refRect.right && candidateRect.left >= refRect.left;
+      return candidateRect.top >= refRect.bottom && candidateRect.left < refRect.right && candidateRect.right > refRect.left;
     }
     function toLeftOf(candidateRect, refRect) {
-      return candidateRect.right >= refRect.left && candidateRect.bottom <= refRect.bottom && candidateRect.top >= refRect.top;
+      return candidateRect.right >= refRect.left && candidateRect.top < refRect.bottom && candidateRect.bottom > refRect.top;
     }
     function toRightOf(candidateRect, refRect) {
-      return candidateRect.left >= refRect.right && candidateRect.bottom <= refRect.bottom && candidateRect.top >= refRect.top;
+      return candidateRect.left >= refRect.right && candidateRect.top < refRect.bottom && candidateRect.bottom > refRect.top;
     }
     function near(candidateRect, refRect) { return false; }
 
