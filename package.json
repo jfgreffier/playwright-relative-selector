@@ -4,7 +4,7 @@
   "description": "Relative selector for Playwright",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"no test specified... yet\""
+    "test": "jest test/"
   },
   "repository": {
     "type": "git",
@@ -20,5 +20,9 @@
   "bugs": {
     "url": "https://github.com/jfgreffier/playwright-relative-selector/issues"
   },
-  "homepage": "https://github.com/jfgreffier/playwright-relative-selector#readme"
+  "homepage": "https://github.com/jfgreffier/playwright-relative-selector#readme",
+  "devDependencies": {
+    "jest": "^26.4.2",
+    "playwright": "^1.4.2"
+  }
 }
