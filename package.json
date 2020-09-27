@@ -1,7 +1,7 @@
 {
   "name": "playwright-relative-selector",
   "version": "0.1.0",
-  "description": "Relative selector for Playwright",
+  "description": "Playwright selector to locate elements relative to others",
   "main": "index.js",
   "scripts": {
     "test": "jest test/"
