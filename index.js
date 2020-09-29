@@ -1,7 +1,7 @@
-module.exports = createTagNameEngine = () => ({
+const createTagNameEngine = () => ({
   // Creates a selector that matches given target when queried at the root.
   // Can return undefined if unable to create one.
-  create(root, target) {
+  create() {
     return undefined;
   },
 
@@ -22,7 +22,7 @@ module.exports = createTagNameEngine = () => ({
     function toRightOf(candidateRect, refRect) {
       return candidateRect.left >= refRect.right && candidateRect.top < refRect.bottom && candidateRect.bottom > refRect.top;
     }
-    function near(candidateRect, refRect) { return false; }
+    function near() { return false; }
 
     var args = selector.match(/^(.+?) (.+)/);
     var proximity = args[1];
@@ -34,11 +34,11 @@ module.exports = createTagNameEngine = () => ({
     var recruteurRect = recruteur.getBoundingClientRect(); // DOMRect
     var test = near;
     switch (proximity) {
-      case 'above' : test = above; break;
-      case 'below' : test = below; break;
-      case 'toLeftOf' : test = toLeftOf; break;
-      case 'toRightOf' : test = toRightOf; break;
-      default : test = near; 
+      case 'above': test = above; break;
+      case 'below': test = below; break;
+      case 'toLeftOf': test = toLeftOf; break;
+      case 'toRightOf': test = toRightOf; break;
+      default: test = near;
     }
 
     if (test(candidate, recruteurRect)) {
@@ -49,8 +49,10 @@ module.exports = createTagNameEngine = () => ({
   },
 
   // Returns all elements matching given selector in the root's subtree.
-  queryAll(root, selector) {
+  queryAll() {
     // map
     return undefined;
   }
 });
+
+module.exports = createTagNameEngine;
