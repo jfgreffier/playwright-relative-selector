@@ -4,7 +4,7 @@
   "description": "Playwright selector to locate elements relative to others",
   "main": "index.js",
   "scripts": {
-    "lint": "echo \"no lint yet\"",
+    "lint": "eslint .",
     "test": "jest test/"
   },
   "repository": {
@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/jfgreffier/playwright-relative-selector#readme",
   "devDependencies": {
+    "eslint": "^7.10.0",
     "jest": "^26.4.2",
     "playwright": "^1.4.2"
   }
