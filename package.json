@@ -4,6 +4,7 @@
   "description": "Playwright selector to locate elements relative to others",
   "main": "index.js",
   "scripts": {
+    "lint": "echo \"no lint yet\"",
     "test": "jest test/"
   },
   "repository": {
