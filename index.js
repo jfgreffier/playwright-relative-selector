@@ -8,21 +8,41 @@ const createTagNameEngine = () => ({
   // Returns the first element matching given selector in the root's subtree.
   query(root, selector) {
     function textSelector(selector) {
-      return Array.from(document.querySelectorAll('*')).find(el => el.textContent === selector);
+      return Array.from(document.querySelectorAll("*")).find(
+        (el) => el.textContent === selector
+      );
     }
     function above(candidateRect, refRect) {
-      return candidateRect.bottom >= refRect.top && candidateRect.left < refRect.right && candidateRect.right > refRect.left;
+      return (
+        candidateRect.bottom >= refRect.top &&
+        candidateRect.left < refRect.right &&
+        candidateRect.right > refRect.left
+      );
     }
     function below(candidateRect, refRect) {
-      return candidateRect.top >= refRect.bottom && candidateRect.left < refRect.right && candidateRect.right > refRect.left;
+      return (
+        candidateRect.top >= refRect.bottom &&
+        candidateRect.left < refRect.right &&
+        candidateRect.right > refRect.left
+      );
     }
     function toLeftOf(candidateRect, refRect) {
-      return candidateRect.right >= refRect.left && candidateRect.top < refRect.bottom && candidateRect.bottom > refRect.top;
+      return (
+        candidateRect.right >= refRect.left &&
+        candidateRect.top < refRect.bottom &&
+        candidateRect.bottom > refRect.top
+      );
     }
     function toRightOf(candidateRect, refRect) {
-      return candidateRect.left >= refRect.right && candidateRect.top < refRect.bottom && candidateRect.bottom > refRect.top;
+      return (
+        candidateRect.left >= refRect.right &&
+        candidateRect.top < refRect.bottom &&
+        candidateRect.bottom > refRect.top
+      );
     }
-    function near() { return false; }
+    function near() {
+      return false;
+    }
 
     var args = selector.match(/^(.+?) (.+)/);
     var proximity = args[1];
@@ -34,11 +54,20 @@ const createTagNameEngine = () => ({
     var recruteurRect = recruteur.getBoundingClientRect(); // DOMRect
     var test = near;
     switch (proximity) {
-      case 'above': test = above; break;
-      case 'below': test = below; break;
-      case 'toLeftOf': test = toLeftOf; break;
-      case 'toRightOf': test = toRightOf; break;
-      default: test = near;
+      case "above":
+        test = above;
+        break;
+      case "below":
+        test = below;
+        break;
+      case "toLeftOf":
+        test = toLeftOf;
+        break;
+      case "toRightOf":
+        test = toRightOf;
+        break;
+      default:
+        test = near;
     }
 
     if (test(candidate, recruteurRect)) {
@@ -52,7 +81,7 @@ const createTagNameEngine = () => ({
   queryAll() {
     // map
     return undefined;
-  }
+  },
 });
 
 module.exports = createTagNameEngine;
