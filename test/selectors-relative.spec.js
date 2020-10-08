@@ -26,8 +26,10 @@ afterAll(async () => {
   await browser.close();
 });
 
-it("should use element toRightOf other selector", async () => {
+it("should select element toRightOf other selector", async () => {
   await page.goto("http://localhost:" + port);
-  await page.click(`text="Click me" >> relative=toRightOf Middle`);
-  expect(await page.evaluate("result")).toBe("Right");
+  const elem = await page.$(
+    `text="candidate text" >> relative=toRightOf Reference text`
+  );
+  expect(await elem.getAttribute("id")).toBe("6");
 });
