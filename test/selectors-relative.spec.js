@@ -1,6 +1,7 @@
 const Promise = require("promise");
 const express = require("express");
-const { selectors, firefox } = require("playwright");
+const { firefox } = require("playwright");
+const relativeSelector = require("../index");
 let server, port;
 let browser;
 let page;
@@ -8,7 +9,6 @@ let page;
 beforeAll(async () => {
   browser = await firefox.launch();
   page = await browser.newPage();
-  await selectors.register("relative", require("../index"));
 
   const app = express();
   app.use(express.static("test/assets"));
@@ -28,8 +28,9 @@ afterAll(async () => {
 
 it("should select element toRightOf other selector", async () => {
   await page.goto("http://localhost:" + port);
-  const elem = await page.$(
-    `text="candidate text" >> relative=toRightOf Reference text`
+  const elem = await relativeSelector(
+    page,
+    'text="candidate text" toRightOf text="Reference text"'
   );
   expect(await elem.getAttribute("id")).toBe("6");
 });
