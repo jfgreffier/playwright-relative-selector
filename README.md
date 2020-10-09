@@ -2,7 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/playwright-relative-selector.svg?style=flat)](https://www.npmjs.com/package/playwright-relative-selector)
 
-Playwright selector to locate elements relative to others
+Playwright helper to locate elements relative to others
 
 ## Usage
 
@@ -10,16 +10,18 @@ Playwright selector to locate elements relative to others
 npm install --save-dev playwright-relative-selector
 ```
 
-Once installed, you can `require` this package in a Node.js script and register it as a Playwright selector.
+Once installed, you can `require` this package in a Node.js script and use it with Playwright.
 
 ```js
-await selectors.register('relative', require('playwright-relative-selector'));
-await page.click(`text="Sign In" >> relative=toRightOf Home`);
+const relativeSelector = require('playwright-relative-selector');
+
+const clickMeElement = await relativeSelector(page, 'text="Sign In" toRightOf css=#home');
+await clickMeElement.click();
 ```
 
 ## Selectors
 
-Available selectors: 
+Available selectors:
 - above
 - below
 - toLeftOf
@@ -33,6 +35,7 @@ This code snippet sets a page with three buttons and clicks on the 'Click me' el
 
 ```js
 const { firefox, selectors } = require('playwright');
+const relativeSelector = require('playwright-relative-selector');
 
 (async () => {
   const browser = await firefox.launch({ headless: false });
@@ -44,8 +47,8 @@ const { firefox, selectors } = require('playwright');
     </div>
   `);
 
-  await selectors.register('relative', require('playwright-relative-selector'));
-  await page.click(`text="Click me" >> relative=toRightOf Middle`);
+  const clickMeElement = await relativeSelector(page, 'text="Click me" toRightOf text="Middle"');
+  await clickMeElement.click();
 
   await browser.close();
 })();

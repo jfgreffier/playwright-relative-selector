@@ -1,87 +1,110 @@
-const createTagNameEngine = () => ({
-  // Creates a selector that matches given target when queried at the root.
-  // Can return undefined if unable to create one.
-  create() {
-    return undefined;
-  },
+function above(candidateRect, refRect) {
+  return refRect.y < candidateRect.y + candidateRect.height;
+}
 
-  // Returns the first element matching given selector in the root's subtree.
-  query(root, selector) {
-    function textSelector(selector) {
-      return Array.from(document.querySelectorAll("*")).find(
-        (el) => el.textContent === selector
-      );
-    }
-    function above(candidateRect, refRect) {
-      return (
-        candidateRect.bottom >= refRect.top &&
-        candidateRect.left < refRect.right &&
-        candidateRect.right > refRect.left
-      );
-    }
-    function below(candidateRect, refRect) {
-      return (
-        candidateRect.top >= refRect.bottom &&
-        candidateRect.left < refRect.right &&
-        candidateRect.right > refRect.left
-      );
-    }
-    function toLeftOf(candidateRect, refRect) {
-      return (
-        candidateRect.right >= refRect.left &&
-        candidateRect.top < refRect.bottom &&
-        candidateRect.bottom > refRect.top
-      );
-    }
-    function toRightOf(candidateRect, refRect) {
-      return (
-        candidateRect.left >= refRect.right &&
-        candidateRect.top < refRect.bottom &&
-        candidateRect.bottom > refRect.top
-      );
-    }
-    function near() {
-      return false;
-    }
+function below(candidateRect, refRect) {
+  return candidateRect.y > refRect.y + refRect.height;
+}
 
-    var args = selector.match(/^(.+?) (.+)/);
-    var proximity = args[1];
-    var elementSelector = args[2];
+function toLeftOf(candidateRect, refRect) {
+  return refRect.x < candidateRect.x + candidateRect.width;
+}
 
-    var recruteur = textSelector(elementSelector);
+function toRightOf(candidateRect, refRect) {
+  return candidateRect.x > refRect.x + refRect.width;
+}
 
-    var candidate = root.getBoundingClientRect();
-    var recruteurRect = recruteur.getBoundingClientRect(); // DOMRect
-    var test = near;
-    switch (proximity) {
-      case "above":
-        test = above;
-        break;
-      case "below":
-        test = below;
-        break;
-      case "toLeftOf":
-        test = toLeftOf;
-        break;
-      case "toRightOf":
-        test = toRightOf;
-        break;
-      default:
-        test = near;
+function near() {
+  return false;
+}
+
+function meetsProximitySelector(
+  candidateBoundingBox,
+  refBoundingBox,
+  proximitySelector
+) {
+  var test = near;
+
+  switch (proximitySelector) {
+    case "above":
+      test = above;
+      break;
+    case "below":
+      test = below;
+      break;
+    case "toLeftOf":
+      test = toLeftOf;
+      break;
+    case "toRightOf":
+      test = toRightOf;
+      break;
+    default:
+      test = near;
+  }
+  return test(candidateBoundingBox, refBoundingBox);
+}
+
+function distance(candidateBoundingBox, refBoundingBox) {
+  let leftDiff = Math.abs(candidateBoundingBox.x - refBoundingBox.x);
+  let rightDiff = Math.abs(
+    candidateBoundingBox.x +
+      candidateBoundingBox.width -
+      (refBoundingBox.x + refBoundingBox.width)
+  );
+  let topDiff = Math.abs(candidateBoundingBox.y - refBoundingBox.y);
+  let bottomDiff = Math.abs(
+    candidateBoundingBox.y +
+      candidateBoundingBox.height -
+      (refBoundingBox.x + refBoundingBox.height)
+  );
+  let distance = leftDiff + rightDiff + topDiff + bottomDiff;
+  return distance;
+}
+
+function getClosestId(candidatesBoundingBox, refBoundingBox) {
+  var minId = 0;
+  for (let i = 0; i < candidatesBoundingBox.length; i++) {
+    let a = distance(candidatesBoundingBox[i], refBoundingBox);
+    let b = distance(candidatesBoundingBox[minId], refBoundingBox);
+    if (a < b) {
+      minId = i;
     }
+  }
 
-    if (test(candidate, recruteurRect)) {
-      return root;
+  return minId;
+}
+
+async function relativeSelector(page, selector) {
+  var args = selector.match(/^(.+?) (above|below|toLeftOf|toRightOf) (.+)/);
+  var candidatesSelector = args[1];
+  var proximitySelector = args[2];
+  var refSelector = args[3];
+
+  const candidates = await page.$$(candidatesSelector);
+  const ref = await page.$(refSelector);
+  const refBoundingBox = await ref.boundingBox();
+
+  var results = [];
+  for (const candidate of candidates) {
+    const candidateBoundingBox = await candidate.boundingBox();
+    if (
+      await meetsProximitySelector(
+        candidateBoundingBox,
+        refBoundingBox,
+        proximitySelector
+      )
+    ) {
+      results.push(candidate);
     }
+  }
 
-    return undefined;
-  },
+  var resultsBoundingBox = [];
+  for (const result of results) {
+    resultsBoundingBox.push(await result.boundingBox());
+  }
+  var closestResult = results[getClosestId(resultsBoundingBox, refBoundingBox)];
 
-  // Returns all elements matching given selector in the root's subtree.
-  queryAll() {
-    // map
-    return undefined;
-  },
-});
+  return closestResult;
+}
 
-module.exports = createTagNameEngine;
+module.exports = relativeSelector;
