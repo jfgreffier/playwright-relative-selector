@@ -1,7 +1,7 @@
 const Promise = require("promise");
 const express = require("express");
 const { firefox } = require("playwright");
-const relativeSelector = require("../index");
+const relativeSelector = require("../src/index");
 let server, port;
 let browser;
 let page;
