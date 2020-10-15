@@ -2,9 +2,9 @@
   "name": "playwright-relative-selector",
   "version": "0.2.0",
   "description": "Playwright selector to locate elements relative to others",
-  "main": "index.js",
+  "main": "src",
   "files": [
-    "index.js"
+    "src"
   ],
   "scripts": {
     "lint": "eslint .",
