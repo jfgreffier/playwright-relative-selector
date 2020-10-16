@@ -1,17 +1,17 @@
 function above(candidateRect, refRect) {
-  return refRect.y < candidateRect.y + candidateRect.height;
+  return candidateRect.y + candidateRect.height <= refRect.y;
 }
 
 function below(candidateRect, refRect) {
-  return candidateRect.y > refRect.y + refRect.height;
+  return candidateRect.y >= refRect.y + refRect.height;
 }
 
 function toLeftOf(candidateRect, refRect) {
-  return refRect.x < candidateRect.x + candidateRect.width;
+  return candidateRect.x + candidateRect.width <= refRect.x;
 }
 
 function toRightOf(candidateRect, refRect) {
-  return candidateRect.x > refRect.x + refRect.width;
+  return candidateRect.x >= refRect.x + refRect.width;
 }
 
 function near() {
