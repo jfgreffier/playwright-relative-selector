@@ -26,6 +26,7 @@ jobs:
       - uses: microsoft/playwright-github-action@v1
       - run: npm ci
       - name: Coverage
+        id: coverage
         run: |
           COVERAGE="$( npm test -- --coverage | grep -oP 'All files[^|]*\|[^|]*\s+\K([\d\.]+)' )"
           echo "Coverage: ${COVERAGE}%"
