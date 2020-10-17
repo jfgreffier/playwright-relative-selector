@@ -18,8 +18,8 @@ jobs:
 
       - name: Coverage
         run: |
-        echo "84.31" >> COVERAGE
-        echo "##[set-output name=lines;]${COVERAGE}%"
+          npm test -- --coverage | grep -oP "All files[^|]*\|[^|]*\s+\K([\d\.]+)" >> COVERAGE
+          echo "Coverage: ${COVERAGE}%"
       - name: Generate coverage badge
         uses: emibcn/badge-action@v1
         with:
