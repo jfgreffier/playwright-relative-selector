@@ -15,4 +15,7 @@ jobs:
       - uses: microsoft/playwright-github-action@v1
       - run: npm ci
       - run: npm run lint
-      - run: npm test -- --coverage
+      - name: Coverage
+        run: |
+        npm test -- --coverage | grep -oP "All files[^|]*\|[^|]*\s+\K([\d\.]+)" >> $COVERAGE
+        echo $COVERAGE
