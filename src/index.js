@@ -39,7 +39,9 @@ function distance(candidateBoundingBox, refBoundingBox) {
       candidateBoundingBox.height -
       (refBoundingBox.x + refBoundingBox.height)
   );
-  let distance =  Math.sqrt(leftDiff**2 + rightDiff**2 + topDiff**2 + bottomDiff**2);
+  let distance = Math.sqrt(
+    leftDiff ** 2 + rightDiff ** 2 + topDiff ** 2 + bottomDiff ** 2
+  );
   return distance;
 }
 
