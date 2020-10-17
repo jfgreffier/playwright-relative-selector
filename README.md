@@ -1,6 +1,7 @@
 # 🎭 Playwright relative selector
 
 [![npm version](https://img.shields.io/npm/v/playwright-relative-selector.svg?style=flat)](https://www.npmjs.com/package/playwright-relative-selector)
+[![Actions Status](https://github.com/jfgreffier/playwright-relative-selector/workflows/build/badge.svg?branch=master)](https://github.com/jfgreffier/playwright-relative-selector/actions?query=branch:master)
 
 Playwright helper to locate elements relative to others
 
