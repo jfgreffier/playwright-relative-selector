@@ -37,7 +37,7 @@ function distance(candidateBoundingBox, refBoundingBox) {
   let bottomDiff = Math.abs(
     candidateBoundingBox.y +
       candidateBoundingBox.height -
-      (refBoundingBox.x + refBoundingBox.height)
+      (refBoundingBox.y + refBoundingBox.height)
   );
   let distance = Math.sqrt(
     leftDiff ** 2 + rightDiff ** 2 + topDiff ** 2 + bottomDiff ** 2
