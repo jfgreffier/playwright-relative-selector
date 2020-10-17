@@ -27,3 +27,14 @@ jobs:
           status: $COVERAGE
           color: 'blue,555,daf'
           path: '.github/badges/coverage.svg'
+      - name: Commit badge
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .github/badges/coverage.svg
+          git commit -m "Update coverage badge"
+      - name: Push badge commit
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ GITHUB_REF }}
