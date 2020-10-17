@@ -27,13 +27,14 @@ jobs:
       - run: npm ci
       - name: Coverage
         run: |
-          npm test -- --coverage | grep -oP "All files[^|]*\|[^|]*\s+\K([\d\.]+)" >> COVERAGE
+          COVERAGE="$( npm test -- --coverage | grep -oP 'All files[^|]*\|[^|]*\s+\K([\d\.]+)' )"
           echo "Coverage: ${COVERAGE}%"
+          echo "##[set-output name=coverage;]${COVERAGE}%"
       - name: Generate coverage badge
         uses: emibcn/badge-action@v1
         with:
           label: 'coverage'
-          status: $COVERAGE
+          status: ${{ steps.coverage.outputs.coverage }}
           color: 'blue,555,daf'
           path: '.github/badges/coverage.svg'
       - name: Commit badge
