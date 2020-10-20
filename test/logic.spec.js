@@ -1,4 +1,4 @@
-const { above, below, toLeftOf, toRightOf } = require("../src/logic");
+const { above, below, toLeftOf, toRightOf, near } = require("../src/logic");
 
 const ref = { x: 0, y: 0, width: 20, height: 20 };
 const justAbove = { x: 0, y: -20, width: 20, height: 20 };
@@ -51,5 +51,38 @@ describe("toRightOf", () => {
   it("should be false if not below, smaller, bigger", () => {
     expect(toRightOf(inside, ref)).toBe(false);
     expect(toRightOf(outside, ref)).toBe(false);
+  });
+});
+
+describe("near", () => {
+  it("should be true if within a rect ref", () => {
+    const nearAbove = { x: 0, y: -15, width: 20, height: 20 };
+    expect(near(nearAbove, ref)).toBe(true);
+    const nearBelow = { x: 0, y: 5, width: 20, height: 20 };
+    expect(near(nearBelow, ref)).toBe(true);
+    const nearLeft = { x: -15, y: 0, width: 20, height: 20 };
+    expect(near(nearLeft, ref)).toBe(true);
+    const nearRight = { x: 5, y: 0, width: 20, height: 20 };
+    expect(near(nearRight, ref)).toBe(true);
+  });
+  it("should be true if within a rect ref + offset", () => {
+    const nearAbove = { x: 0, y: -40, width: 20, height: 20 };
+    expect(near(nearAbove, ref)).toBe(true);
+    const nearBelow = { x: 0, y: 30, width: 20, height: 20 };
+    expect(near(nearBelow, ref)).toBe(true);
+    const nearLeft = { x: -40, y: 0, width: 20, height: 20 };
+    expect(near(nearLeft, ref)).toBe(true);
+    const nearRight = { x: 30, y: 0, width: 20, height: 20 };
+    expect(near(nearRight, ref)).toBe(true);
+  });
+  it("should be false if far", () => {
+    const nearAbove = { x: 0, y: -115, width: 20, height: 20 };
+    expect(near(nearAbove, ref)).toBe(false);
+    const nearBelow = { x: 0, y: 105, width: 20, height: 20 };
+    expect(near(nearBelow, ref)).toBe(false);
+    const nearLeft = { x: 0, y: -115, width: 20, height: 20 };
+    expect(near(nearLeft, ref)).toBe(false);
+    const nearRight = { x: 0, y: 105, width: 20, height: 20 };
+    expect(near(nearRight, ref)).toBe(false);
   });
 });
