@@ -1,4 +1,11 @@
-const { above, below, toLeftOf, toRightOf, near } = require("../src/logic");
+const {
+  above,
+  below,
+  toLeftOf,
+  toRightOf,
+  near,
+  distance,
+} = require("../src/logic");
 
 const ref = { x: 0, y: 0, width: 20, height: 20 };
 const justAbove = { x: 0, y: -20, width: 20, height: 20 };
@@ -85,5 +92,14 @@ describe("near", () => {
     expect(near(farBelow, ref)).toBe(false);
     expect(near(farLeft, ref)).toBe(false);
     expect(near(farRight, ref)).toBe(false);
+  });
+});
+
+describe("distance", () => {
+  it("should be bigger if far", () => {
+    expect(distance(farAbove, ref)).toBeGreaterThan(distance(nearAbove, ref));
+    expect(distance(farBelow, ref)).toBeGreaterThan(distance(nearBelow, ref));
+    expect(distance(farLeft, ref)).toBeGreaterThan(distance(nearLeft, ref));
+    expect(distance(farRight, ref)).toBeGreaterThan(distance(nearRight, ref));
   });
 });
