@@ -28,6 +28,9 @@ Available selectors:
 - below
 - toLeftOf
 - toRightOf
+- near
+
+An element is considered relative to another if the distance between the tow is of 30px or less.
 
 ## Examples
 
@@ -36,7 +39,7 @@ Available selectors:
 This code snippet sets a page with three buttons and clicks on the 'Click me' element on the right of 'Middle'
 
 ```js
-const { firefox, selectors } = require('playwright');
+const { firefox } = require('playwright');
 const relativeSelector = require('playwright-relative-selector');
 
 (async () => {
