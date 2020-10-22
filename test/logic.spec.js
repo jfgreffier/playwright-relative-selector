@@ -10,6 +10,15 @@ const bottomRight = { x: 30, y: 30, width: 20, height: 20 };
 const inside = { x: 5, y: 5, width: 10, height: 10 };
 const outside = { x: -20, y: -20, width: 60, height: 60 };
 
+const nearAbove = { x: 0, y: -15, width: 20, height: 20 };
+const nearBelow = { x: 0, y: 5, width: 20, height: 20 };
+const nearLeft = { x: -15, y: 0, width: 20, height: 20 };
+const nearRight = { x: 5, y: 0, width: 20, height: 20 };
+const farAbove = { x: 0, y: -115, width: 20, height: 20 };
+const farBelow = { x: 0, y: 105, width: 20, height: 20 };
+const farLeft = { x: 0, y: -115, width: 20, height: 20 };
+const farRight = { x: 0, y: 105, width: 20, height: 20 };
+
 describe("above", () => {
   it("should be true if above", () => {
     expect(above(topLeft, ref)).toBe(true);
@@ -56,13 +65,9 @@ describe("toRightOf", () => {
 
 describe("near", () => {
   it("should be true if within a rect ref", () => {
-    const nearAbove = { x: 0, y: -15, width: 20, height: 20 };
     expect(near(nearAbove, ref)).toBe(true);
-    const nearBelow = { x: 0, y: 5, width: 20, height: 20 };
     expect(near(nearBelow, ref)).toBe(true);
-    const nearLeft = { x: -15, y: 0, width: 20, height: 20 };
     expect(near(nearLeft, ref)).toBe(true);
-    const nearRight = { x: 5, y: 0, width: 20, height: 20 };
     expect(near(nearRight, ref)).toBe(true);
   });
   it("should be true if within a rect ref + offset", () => {
@@ -76,13 +81,9 @@ describe("near", () => {
     expect(near(nearRight, ref)).toBe(true);
   });
   it("should be false if far", () => {
-    const nearAbove = { x: 0, y: -115, width: 20, height: 20 };
-    expect(near(nearAbove, ref)).toBe(false);
-    const nearBelow = { x: 0, y: 105, width: 20, height: 20 };
-    expect(near(nearBelow, ref)).toBe(false);
-    const nearLeft = { x: 0, y: -115, width: 20, height: 20 };
-    expect(near(nearLeft, ref)).toBe(false);
-    const nearRight = { x: 0, y: 105, width: 20, height: 20 };
-    expect(near(nearRight, ref)).toBe(false);
+    expect(near(farAbove, ref)).toBe(false);
+    expect(near(farBelow, ref)).toBe(false);
+    expect(near(farLeft, ref)).toBe(false);
+    expect(near(farRight, ref)).toBe(false);
   });
 });
