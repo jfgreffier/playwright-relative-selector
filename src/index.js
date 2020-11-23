@@ -1,82 +1,40 @@
-const {
-  above,
-  below,
-  near,
-  toLeftOf,
-  toRightOf,
-  distance,
-} = require("./logic");
+/*eslint no-unused-vars: ["off"]*/
+// This script is injected on the browser
+const lib = require("./logic.js");
+const { selectors } = require("./selectors.js");
 
-function meetsProximitySelector(
-  candidateBoundingBox,
-  refBoundingBox,
-  proximitySelector
-) {
-  var test = near;
+const register = (proximitySelector) => ({
+  create(root, targetElement) {
+    console.error("relativeSelector.create() not implemented !");
+    throw new Error("Error : relativeSelector.create() not implemented");
+  },
 
-  switch (proximitySelector) {
-    case "above":
-      test = above;
-      break;
-    case "below":
-      test = below;
-      break;
-    case "toLeftOf":
-      test = toLeftOf;
-      break;
-    case "toRightOf":
-      test = toRightOf;
-      break;
-    default:
-      test = near;
-  }
-  return test(candidateBoundingBox, refBoundingBox);
-}
+  query(root, targetElement) {
+    //@INJECT_LIB
+    return selectors(root, proximitySelector, targetElement);
+  },
 
-function getClosestId(candidatesBoundingBox, refBoundingBox) {
-  var minId = 0;
-  for (let i = 0; i < candidatesBoundingBox.length; i++) {
-    let a = distance(candidatesBoundingBox[i], refBoundingBox);
-    let b = distance(candidatesBoundingBox[minId], refBoundingBox);
-    if (a < b) {
-      minId = i;
-    }
-  }
+  queryAll(root, targetElement) {
+    console.error("relativeSelector.queryAll() not implemented !");
+    throw new Error("Error : relativeSelector.queryAll() not implemented");
+  },
+});
 
-  return minId;
-}
-
-async function relativeSelector(page, selector) {
-  var args = selector.match(/^(.+?) (above|below|toLeftOf|toRightOf) (.+)/);
-  var candidatesSelector = args[1];
-  var proximitySelector = args[2];
-  var refSelector = args[3];
-
-  const candidates = await page.$$(candidatesSelector);
-  const ref = await page.$(refSelector);
-  const refBoundingBox = await ref.boundingBox();
-
-  var results = [];
-  for (const candidate of candidates) {
-    const candidateBoundingBox = await candidate.boundingBox();
-    if (
-      await meetsProximitySelector(
-        candidateBoundingBox,
-        refBoundingBox,
-        proximitySelector
-      )
-    ) {
-      results.push(candidate);
-    }
-  }
-
-  var resultsBoundingBox = [];
-  for (const result of results) {
-    resultsBoundingBox.push(await result.boundingBox());
-  }
-  var closestResult = results[getClosestId(resultsBoundingBox, refBoundingBox)];
-
-  return closestResult;
-}
+const relativeSelector = async function registerOn(selector) {
+  let script = lib.near.toString();
+  script += lib.above.toString();
+  script += lib.below.toString();
+  script += lib.left.toString();
+  script += lib.right.toString();
+  script += lib.distance.toString();
+  script += lib.meetsProximitySelector.toString();
+  script += selectors.toString();
+  const injectedScript = register.toString().replace("//@INJECT_LIB", script);
+  await selector.register("near", `(${injectedScript})("near")`);
+  await selector.register("above", `(${injectedScript})("above")`);
+  await selector.register("below", `(${injectedScript})("below")`);
+  await selector.register("left", `(${injectedScript})("left")`);
+  await selector.register("right", `(${injectedScript})("right")`);
+};
 
 module.exports = relativeSelector;

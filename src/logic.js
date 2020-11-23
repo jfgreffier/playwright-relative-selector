@@ -1,52 +1,74 @@
+// This script is injected on the browser
+function near(candidateRect, refRect, offset = 30) {
+  return (
+    candidateRect.right > refRect.left - offset &&
+    candidateRect.left < refRect.right + offset &&
+    candidateRect.bottom > refRect.top - offset &&
+    candidateRect.top < refRect.bottom + offset
+  );
+}
+
 function above(candidateRect, refRect) {
-  return candidateRect.y + candidateRect.height <= refRect.y;
+  return candidateRect.bottom <= refRect.top;
 }
 
 function below(candidateRect, refRect) {
-  return candidateRect.y >= refRect.y + refRect.height;
+  return candidateRect.top >= refRect.bottom;
 }
 
-function toLeftOf(candidateRect, refRect) {
-  return candidateRect.x + candidateRect.width <= refRect.x;
+function left(candidateRect, refRect) {
+  return candidateRect.right <= refRect.left;
 }
 
-function toRightOf(candidateRect, refRect) {
-  return candidateRect.x >= refRect.x + refRect.width;
+function right(candidateRect, refRect) {
+  return candidateRect.left >= refRect.right;
 }
 
-function near(candidateRect, refRect, offset = 30) {
-  return (
-    candidateRect.x + candidateRect.width > refRect.x - offset &&
-    candidateRect.x < refRect.x + offset + refRect.width &&
-    candidateRect.y + candidateRect.height > refRect.y - offset &&
-    candidateRect.y < refRect.y + offset + refRect.height
-  );
+function meetsProximitySelector(
+  proximitySelector,
+  candidateBoundingBox,
+  refBoundingBox
+) {
+  switch (proximitySelector) {
+    case "above":
+      return above(candidateBoundingBox, refBoundingBox);
+    case "below":
+      return below(candidateBoundingBox, refBoundingBox);
+    case "left":
+      return left(candidateBoundingBox, refBoundingBox);
+    case "right":
+      return right(candidateBoundingBox, refBoundingBox);
+  }
+  return near(candidateBoundingBox, refBoundingBox);
 }
 
-function distance(candidateBoundingBox, refBoundingBox) {
-  let leftDiff = Math.abs(candidateBoundingBox.x - refBoundingBox.x);
-  let rightDiff = Math.abs(
-    candidateBoundingBox.x +
-      candidateBoundingBox.width -
-      (refBoundingBox.x + refBoundingBox.width)
+function distance(candidateBoundingBox, refBoundingBox, proximitySelector) {
+  let xDiff = Math.min(
+    Math.abs(refBoundingBox.left - candidateBoundingBox.left),
+    Math.abs(refBoundingBox.left - candidateBoundingBox.right),
+    Math.abs(refBoundingBox.right - candidateBoundingBox.left),
+    Math.abs(refBoundingBox.right - candidateBoundingBox.right)
   );
-  let topDiff = Math.abs(candidateBoundingBox.y - refBoundingBox.y);
-  let bottomDiff = Math.abs(
-    candidateBoundingBox.y +
-      candidateBoundingBox.height -
-      (refBoundingBox.y + refBoundingBox.height)
+  let yDiff = Math.min(
+    Math.abs(refBoundingBox.top - candidateBoundingBox.top),
+    Math.abs(refBoundingBox.top - candidateBoundingBox.bottom),
+    Math.abs(refBoundingBox.bottom - candidateBoundingBox.top),
+    Math.abs(refBoundingBox.bottom - candidateBoundingBox.bottom)
   );
-  let distance = Math.sqrt(
-    leftDiff ** 2 + rightDiff ** 2 + topDiff ** 2 + bottomDiff ** 2
-  );
-  return distance;
+  if (proximitySelector === "above" || proximitySelector === "below") {
+    xDiff = xDiff * 10; // Give priority on distance Y
+  } else if (proximitySelector === "left" || proximitySelector === "right") {
+    yDiff = yDiff * 10; // Give priority on distance X
+  }
+  return Math.sqrt(xDiff ** 2 + yDiff ** 2);
 }
 
 module.exports = {
+  near,
   above,
   below,
-  toLeftOf,
-  toRightOf,
-  near,
+  left,
+  right,
   distance,
+  meetsProximitySelector,
 };

@@ -1,30 +1,44 @@
 const {
   above,
   below,
-  toLeftOf,
-  toRightOf,
+  left,
+  right,
   near,
   distance,
-} = require("../src/logic");
+  meetsProximitySelector,
+} = require("../src/logic.js");
 
-const ref = { x: 0, y: 0, width: 20, height: 20 };
-const justAbove = { x: 0, y: -20, width: 20, height: 20 };
-const justBelow = { x: 0, y: 20, width: 20, height: 20 };
-const justLeft = { x: -20, y: 0, width: 20, height: 20 };
-const justRight = { x: 20, y: 0, width: 20, height: 20 };
-const topLeft = { x: -30, y: -30, width: 20, height: 20 };
-const bottomRight = { x: 30, y: 30, width: 20, height: 20 };
-const inside = { x: 5, y: 5, width: 10, height: 10 };
-const outside = { x: -20, y: -20, width: 60, height: 60 };
+//////////////////////////////////////////////////////////////////////////////////////////
+// Compute getBoundingClientRect
+// https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
+//
 
-const nearAbove = { x: 0, y: -15, width: 20, height: 20 };
-const nearBelow = { x: 0, y: 5, width: 20, height: 20 };
-const nearLeft = { x: -15, y: 0, width: 20, height: 20 };
-const nearRight = { x: 5, y: 0, width: 20, height: 20 };
-const farAbove = { x: 0, y: -115, width: 20, height: 20 };
-const farBelow = { x: 0, y: 105, width: 20, height: 20 };
-const farLeft = { x: 0, y: -115, width: 20, height: 20 };
-const farRight = { x: 0, y: 105, width: 20, height: 20 };
+function rect(element) {
+  element.left = element.x;
+  element.right = element.x + element.width;
+  element.top = element.y;
+  element.bottom = element.y + element.height;
+  return element;
+}
+
+const ref = rect({ x: 0, y: 0, width: 20, height: 20 });
+const justAbove = rect({ x: 0, y: -20, width: 20, height: 20 });
+const justBelow = rect({ x: 0, y: 20, width: 20, height: 20 });
+const justLeft = rect({ x: -20, y: 0, width: 20, height: 20 });
+const justRight = rect({ x: 20, y: 0, width: 20, height: 20 });
+const topLeft = rect({ x: -30, y: -30, width: 20, height: 20 });
+const bottomRight = rect({ x: 30, y: 30, width: 20, height: 20 });
+const inside = rect({ x: 5, y: 5, width: 10, height: 10 });
+const outside = rect({ x: -20, y: -20, width: 60, height: 60 });
+
+const nearAbove = rect({ x: 0, y: -15, width: 20, height: 20 });
+const nearBelow = rect({ x: 0, y: 5, width: 20, height: 20 });
+const nearLeft = rect({ x: -15, y: 0, width: 20, height: 20 });
+const nearRight = rect({ x: 5, y: 0, width: 20, height: 20 });
+const farAbove = rect({ x: 0, y: -115, width: 20, height: 20 });
+const farBelow = rect({ x: 0, y: 105, width: 20, height: 20 });
+const farLeft = rect({ x: 0, y: -115, width: 20, height: 20 });
+const farRight = rect({ x: 0, y: 105, width: 20, height: 20 });
 
 describe("above", () => {
   it("should be true if above", () => {
@@ -48,25 +62,25 @@ describe("below", () => {
   });
 });
 
-describe("toLeftOf", () => {
-  it("should be true if toLeftOf", () => {
-    expect(toLeftOf(topLeft, ref)).toBe(true);
-    expect(toLeftOf(justLeft, ref)).toBe(true);
+describe("left", () => {
+  it("should be true if left", () => {
+    expect(left(topLeft, ref)).toBe(true);
+    expect(left(justLeft, ref)).toBe(true);
   });
   it("should be false if not below, smaller, bigger", () => {
-    expect(toLeftOf(inside, ref)).toBe(false);
-    expect(toLeftOf(outside, ref)).toBe(false);
+    expect(left(inside, ref)).toBe(false);
+    expect(left(outside, ref)).toBe(false);
   });
 });
 
-describe("toRightOf", () => {
-  it("should be true if toRightOf", () => {
-    expect(toRightOf(bottomRight, ref)).toBe(true);
-    expect(toRightOf(justRight, ref)).toBe(true);
+describe("right", () => {
+  it("should be true if right", () => {
+    expect(right(bottomRight, ref)).toBe(true);
+    expect(right(justRight, ref)).toBe(true);
   });
   it("should be false if not below, smaller, bigger", () => {
-    expect(toRightOf(inside, ref)).toBe(false);
-    expect(toRightOf(outside, ref)).toBe(false);
+    expect(right(inside, ref)).toBe(false);
+    expect(right(outside, ref)).toBe(false);
   });
 });
 
@@ -78,15 +92,16 @@ describe("near", () => {
     expect(near(nearRight, ref)).toBe(true);
   });
   it("should be true if within a rect ref + offset", () => {
-    const nearAbove = { x: 0, y: -40, width: 20, height: 20 };
+    const nearAbove = rect({ x: 0, y: -40, width: 20, height: 20 });
     expect(near(nearAbove, ref)).toBe(true);
-    const nearBelow = { x: 0, y: 30, width: 20, height: 20 };
+    const nearBelow = rect({ x: 0, y: 30, width: 20, height: 20 });
     expect(near(nearBelow, ref)).toBe(true);
-    const nearLeft = { x: -40, y: 0, width: 20, height: 20 };
+    const nearLeft = rect({ x: -40, y: 0, width: 20, height: 20 });
     expect(near(nearLeft, ref)).toBe(true);
-    const nearRight = { x: 30, y: 0, width: 20, height: 20 };
+    const nearRight = rect({ x: 30, y: 0, width: 20, height: 20 });
     expect(near(nearRight, ref)).toBe(true);
   });
+
   it("should be false if far", () => {
     expect(near(farAbove, ref)).toBe(false);
     expect(near(farBelow, ref)).toBe(false);
@@ -102,4 +117,24 @@ describe("distance", () => {
     expect(distance(farLeft, ref)).toBeGreaterThan(distance(nearLeft, ref));
     expect(distance(farRight, ref)).toBeGreaterThan(distance(nearRight, ref));
   });
+});
+
+describe("meetsProximitySelector", () => {
+  it("should be use the correct selector", () => {
+    expect(meetsProximitySelector("left", topLeft, ref)).toBe(true);
+    expect(meetsProximitySelector("left", farLeft, ref)).toBe(false);
+    expect(meetsProximitySelector("below", bottomRight, ref)).toBe(true);
+    expect(meetsProximitySelector("below", inside, ref)).toBe(false);
+    expect(meetsProximitySelector("above", topLeft, ref)).toBe(true);
+    expect(meetsProximitySelector("right", justRight, ref)).toBe(true);
+
+    expect(meetsProximitySelector("near", nearBelow, ref)).toBe(true);
+    expect(meetsProximitySelector("near", farRight, ref)).toBe(false);
+  });
+});
+
+it("distance bug", () => {
+  const nearBigRight = rect({ x: 5, y: 0, width: 200, height: 20 });
+  const farRight = rect({ x: 0, y: 105, width: 20, height: 20 });
+  expect(distance(farRight, ref)).toBeGreaterThan(distance(nearBigRight, ref));
 });

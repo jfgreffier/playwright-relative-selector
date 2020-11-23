@@ -12,13 +12,19 @@ Playwright helper to locate elements relative to others
 npm install --save-dev playwright-relative-selector
 ```
 
-Once installed, you can `require` this package in a Node.js script and use it with Playwright.
+Once installed, you can `require` this package in a Node.js script and you must register selectors.
 
 ```js
+const { chromium, selectors } = require('playwright');
 const relativeSelector = require('playwright-relative-selector');
 
-const clickMeElement = await relativeSelector(page, 'text="Sign In" toRightOf css=#home');
-await clickMeElement.click();
+const browser = await chromium.launch({ headless: false });
+const page = await browser.newPage();
+
+await relativeSelector(selectors);
+...
+await page.fill('text="Sign In" >> right=input', 'My name');
+
 ```
 
 ## Selectors
@@ -26,8 +32,8 @@ await clickMeElement.click();
 Available selectors:
 - above
 - below
-- toLeftOf
-- toRightOf
+- left
+- right
 - near
 
 An element is considered relative to another if the distance between the tow is of 30px or less.
@@ -39,21 +45,22 @@ An element is considered relative to another if the distance between the tow is 
 This code snippet sets a page with three buttons and clicks on the 'Click me' element on the right of 'Middle'
 
 ```js
-const { firefox } = require('playwright');
+const { firefox, selectors } = require('playwright');
 const relativeSelector = require('playwright-relative-selector');
 
 (async () => {
   const browser = await firefox.launch({ headless: false });
-  const context = await browser.newContext();
-  const page = await context.newPage();
+  await relativeSelector(selectors);
+  const page = await browser.newPage();
   await page.setContent(`
     <div>
       <button>Click me</button><span>Middle</span><button>Click me</button>
     </div>
   `);
 
-  const clickMeElement = await relativeSelector(page, 'text="Click me" toRightOf text="Middle"');
-  await clickMeElement.click();
+  await page.click(page, '"Click me" >> right="Middle"');
+  await page.click(page, '"Click me" >> right=button');
+  await page.click(page, '"Click me" >> right=//button');
 
   await browser.close();
 })();
