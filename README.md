@@ -30,7 +30,7 @@ Available selectors:
 - toRightOf
 - near
 
-An element is considered relative to another if the distance between the tow is of 30px or less.
+An element is considered relative to another if the distance between the two is of 30px or less.
 
 ## Examples
 
