@@ -103,3 +103,45 @@ describe("distance", () => {
     expect(distance(farRight, ref)).toBeGreaterThan(distance(nearRight, ref));
   });
 });
+
+describe("distance of elements with different size", () => {
+  it("should not far if bigger", () => {
+    const nearBigRight = { x: 5, y: 0, width: 200, height: 20 };
+    const farRight = { x: 0, y: 105, width: 20, height: 20 };
+    expect(distance(farRight, ref)).toBeGreaterThan(
+      distance(nearBigRight, ref)
+    );
+  });
+
+  it("should not far if bounded rigth", () => {
+    const bigCloser = {
+      x: ref.x + ref.width + 5,
+      y: -100,
+      width: ref.width,
+      height: 200,
+    };
+    const farSmall = {
+      x: ref.x + ref.width + 10,
+      y: ref.y,
+      width: ref.width,
+      height: ref.height,
+    };
+    expect(distance(farSmall, ref)).toBeGreaterThan(distance(bigCloser, ref));
+  });
+
+  it("should not far if bounded left", () => {
+    const bigCloser = {
+      x: ref.x - ref.width - 5,
+      y: -100,
+      width: ref.width,
+      height: 200,
+    };
+    const farSmall = {
+      x: ref.x - ref.width - 10,
+      y: ref.y,
+      width: ref.width,
+      height: ref.height,
+    };
+    expect(distance(farSmall, ref)).toBeGreaterThan(distance(bigCloser, ref));
+  });
+});

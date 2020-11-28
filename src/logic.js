@@ -24,22 +24,34 @@ function near(candidateRect, refRect, offset = 30) {
 }
 
 function distance(candidateBoundingBox, refBoundingBox) {
-  let leftDiff = Math.abs(candidateBoundingBox.x - refBoundingBox.x);
-  let rightDiff = Math.abs(
-    candidateBoundingBox.x +
-      candidateBoundingBox.width -
-      (refBoundingBox.x + refBoundingBox.width)
+  function diff(ref, candP1, candP2) {
+    const diff1 = ref - candP1;
+    const diff2 = ref - candP2;
+    if (Math.sign(diff1) !== Math.sign(diff2)) {
+      return 0;
+    }
+    return Math.min(Math.abs(diff1), Math.abs(diff2));
+  }
+
+  function distMin(refP1, refP2, candP1, candP2) {
+    const diff1 = diff(refP1, candP1, candP2);
+    const diff2 = diff(refP2, candP1, candP2);
+    return Math.min(diff1, diff2);
+  }
+
+  let xDiff = distMin(
+    refBoundingBox.x,
+    refBoundingBox.x + refBoundingBox.width,
+    candidateBoundingBox.x,
+    candidateBoundingBox.x + candidateBoundingBox.width
   );
-  let topDiff = Math.abs(candidateBoundingBox.y - refBoundingBox.y);
-  let bottomDiff = Math.abs(
-    candidateBoundingBox.y +
-      candidateBoundingBox.height -
-      (refBoundingBox.y + refBoundingBox.height)
+  let yDiff = distMin(
+    refBoundingBox.y,
+    refBoundingBox.y + refBoundingBox.height,
+    candidateBoundingBox.y,
+    candidateBoundingBox.y + candidateBoundingBox.height
   );
-  let distance = Math.sqrt(
-    leftDiff ** 2 + rightDiff ** 2 + topDiff ** 2 + bottomDiff ** 2
-  );
-  return distance;
+  return Math.sqrt(xDiff ** 2 + yDiff ** 2);
 }
 
 module.exports = {
