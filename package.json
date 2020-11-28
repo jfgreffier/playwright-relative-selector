@@ -8,7 +8,10 @@
   ],
   "scripts": {
     "lint": "eslint .",
-    "test": "jest test/"
+    "lint:fix": "eslint --fix .",
+    "test": "jest test/",
+    "test:firefox": "cross-env BROWSER=firefox jest test/",
+    "test:watch": "cross-env HEADFULL=true jest --watch test/"
   },
   "repository": {
     "type": "git",
@@ -33,10 +36,9 @@
     "eslint": "~7.14.0",
     "eslint-config-prettier": "~6.15.0",
     "eslint-plugin-prettier": "~3.1.4",
-    "express": "~4.17.1",
     "jest": "~26.6.3",
     "playwright": "~1.6.2",
     "prettier": "~2.2.1",
-    "promise": "~8.1.0"
+    "cross-env": "~7.0.2"
   }
 }
