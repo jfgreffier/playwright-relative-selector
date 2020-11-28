@@ -1,33 +1,42 @@
-const Promise = require("promise");
-const express = require("express");
+const fs = require("fs");
+const process = require("process");
 const { firefox } = require("playwright");
+const { chromium } = require("playwright");
 const relativeSelector = require("../src/index");
-let server, port;
+
+const headless = process.env.HEADFULL !== "true";
+const browserType = process.env.BROWSER || "chromium";
+
 let browser;
+let context;
 let page;
 
 beforeAll(async () => {
-  browser = await firefox.launch();
-  page = await browser.newPage();
-
-  const app = express();
-  app.use(express.static("test/assets"));
-  await new Promise((resolve) => {
-    server = app.listen(0, () => {
-      port = server.address().port;
-      console.log(`Running server on ${port}...`);
-      resolve();
+  jest.setTimeout(10000);
+  browser =
+    browserType == "firefox"
+      ? await firefox.launch({ headless })
+      : await chromium.launch({ headless });
+  console.log(`Run test with ${browserType} ${browser.version()}`);
+  context = await browser.newContext();
+  page = await context.newPage();
+  page.on("console", (msg) => console.log(msg.text()));
+  await context.route("**/**", (route, req) => {
+    route.fulfill({
+      status: 200,
+      body: fs.readFileSync(
+        "./test/assets/" + req.url().match(/\/mock\/(.*)/)[1]
+      ),
     });
   });
 });
 
 afterAll(async () => {
-  server.close();
   await browser.close();
 });
 
 it("should select element toRightOf other selector", async () => {
-  await page.goto("http://localhost:" + port);
+  await page.goto("http://mock/index.html");
   const elem = await relativeSelector(
     page,
     'text="candidate text" toRightOf text="Reference text"'
