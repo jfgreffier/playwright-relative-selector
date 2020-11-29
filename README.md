@@ -12,13 +12,18 @@ Playwright helper to locate elements relative to others
 npm install --save-dev playwright-relative-selector
 ```
 
-Once installed, you can `require` this package in a Node.js script and use it with Playwright.
+Once installed, you can `require` this package in a Node.js script and register relative selectors.
 
 ```js
+const { chromium, selectors } = require("playwright");
 const relativeSelector = require('playwright-relative-selector');
+// Register relative selectors
+await relativeSelector(selectors);
 
-const clickMeElement = await relativeSelector(page, 'text="Sign In" toRightOf css=#home');
-await clickMeElement.click();
+const browser = await chromium.launch(opts);
+const page = await browser.newPage();
+
+await page.click('text="Sign In" >> toRightOf css=button');
 ```
 
 ## Selectors
@@ -39,21 +44,26 @@ An element is considered relative to another if the distance between the two is 
 This code snippet sets a page with three buttons and clicks on the 'Click me' element on the right of 'Middle'
 
 ```js
-const { firefox } = require('playwright');
+
+const { chromium, selectors } = require("playwright");
 const relativeSelector = require('playwright-relative-selector');
+
+await relativeSelector(selectors);
+
+await page.click('text="Sign In" >> toRightOf css=button');
 
 (async () => {
   const browser = await firefox.launch({ headless: false });
   const context = await browser.newContext();
   const page = await context.newPage();
+
   await page.setContent(`
     <div>
       <button>Click me</button><span>Middle</span><button>Click me</button>
     </div>
   `);
 
-  const clickMeElement = await relativeSelector(page, 'text="Click me" toRightOf text="Middle"');
-  await clickMeElement.click();
+  await page.click('text="Click me" >> toRightOf text="Middle"');
 
   await browser.close();
 })();
