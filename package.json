@@ -9,6 +9,7 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
+    "test": "jest test/",
     "test:chromium": "cross-env BROWSER=chromium jest test/",
     "test:firefox": "cross-env BROWSER=firefox jest test/",
     "test:webkit": "cross-env BROWSER=webkit jest test/",
