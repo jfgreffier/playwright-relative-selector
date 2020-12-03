@@ -20,6 +20,10 @@
     "testing"
   ],
   "author": "jfgreffier",
+  "contributors": [
+    "idxn",
+    "yyvess"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jfgreffier/playwright-relative-selector/issues"
