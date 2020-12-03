@@ -1,24 +1,26 @@
 const fs = require("fs");
 const process = require("process");
-const { firefox } = require("playwright");
 const { chromium } = require("playwright");
+const { firefox } = require("playwright");
+const { webkit } = require("playwright");
 const relativeSelector = require("../src/index");
 
 const headless = process.env.HEADFULL !== "true";
 const browserType = process.env.BROWSER || "chromium";
 
 let browser;
-let context;
 let page;
 
 beforeAll(async () => {
-  jest.setTimeout(10000);
-  browser =
-    browserType == "firefox"
-      ? await firefox.launch({ headless })
-      : await chromium.launch({ headless });
+  if (browserType === "chromium") {
+    browser = await chromium.launch({ headless });
+  } else if (browserType === "firefox") {
+    browser = await firefox.launch({ headless });
+  } else if (browserType === "webkit") {
+    browser = await webkit.launch({ headless });
+  }
   console.log(`Run test with ${browserType} ${browser.version()}`);
-  context = await browser.newContext();
+  const context = await browser.newContext();
   page = await context.newPage();
   page.on("console", (msg) => console.log(msg.text()));
   await context.route("**/**", (route, req) => {
