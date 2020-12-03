@@ -17,7 +17,6 @@ jobs:
       - run: npm run lint
       - run: npm run test:chromium
       - run: npm run test:firefox
-      - run: npm run test:webkit
 
   coverage-badge:
     runs-on: ubuntu-latest
