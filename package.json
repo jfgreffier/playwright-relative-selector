@@ -1,6 +1,6 @@
 {
   "name": "playwright-relative-selector",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Playwright selector to locate elements relative to others",
   "main": "src",
   "files": [
