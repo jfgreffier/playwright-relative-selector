@@ -2,7 +2,7 @@ version: 2
 updates:
   - package-ecosystem: "npm"
     directory: "/"
-    versioning-strategy: increase
+    versioning-strategy: increase_versions_if_necessary
     schedule:
       interval: "weekly"
       day: "wednesday"
