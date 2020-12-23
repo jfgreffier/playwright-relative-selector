@@ -4,5 +4,4 @@ updates:
     directory: "/"
     versioning-strategy: increase_versions_if_necessary
     schedule:
-      interval: "weekly"
-      day: "wednesday"
+      interval: "monthly"
