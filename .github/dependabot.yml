@@ -2,6 +2,6 @@ version: 2
 updates:
   - package-ecosystem: "npm"
     directory: "/"
-    versioning-strategy: increase_versions_if_necessary
+    versioning-strategy: increase-if-necessary
     schedule:
       interval: "monthly"
