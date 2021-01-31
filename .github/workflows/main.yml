@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
       - uses: microsoft/playwright-github-action@v1
-      - run: npm ci
+      - run: npm install
       - run: npm run lint
       - run: npm run test:chromium
       - run: npm run test:firefox
@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
       - uses: microsoft/playwright-github-action@v1
-      - run: npm ci
+      - run: npm install
       - name: Coverage
         id: coverage
         run: |
